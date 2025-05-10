@@ -10,6 +10,7 @@ import CategoryForm from "../Components/Categories/CategoryForm";
 import CategorySearch from "../Components/Categories/CategorySearch";
 import CategoryFilter from "../Components/Categories/CategoryFilter";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import ReactPaginate from "react-paginate";
 
 const CategoryManager = () => {
   const dispatch = useDispatch();
@@ -55,6 +56,11 @@ const CategoryManager = () => {
     setEditingCategory(null);
     loadCategories();
   };
+  // Handle page change from ReactPaginate
+  const handlePageClick = (event) => {
+    // event.selected is 0-indexed, our Redux state for page is 1-indexed
+    dispatch(setPage(event.selected + 1));
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -81,28 +87,60 @@ const CategoryManager = () => {
       ) : (
         <>
           <CategoryTable categories={categories} onEdit={handleEdit} />
-
           {pagination.total > pagination.limit && (
-            <div className="mt-4 flex justify-center">
-              <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                {Array.from({
-                  length: Math.ceil(pagination.total / pagination.limit),
-                }).map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => dispatch(setPage(index + 1))}
-                    className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium
-                      ${
-                        pagination.page === index + 1
-                          ? "z-10 bg-blue-50 border-blue-500 text-blue-600"
-                          : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
-                      }`}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
-              </nav>
+            <div className="mt-8 flex justify-center">
+              <ReactPaginate
+                previousLabel={"< Previous"}
+                nextLabel={"Next >"}
+                breakLabel={"..."}
+                pageCount={pagination.total / pagination.limit}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={3} // Show 3 page numbers in the middle
+                onPageChange={handlePageClick}
+                containerClassName={
+                  "flex items-center space-x-1 sm:space-x-2 text-sm sm:text-base"
+                }
+                pageClassName={"px-1"}
+                pageLinkClassName={
+                  "px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700"
+                }
+                previousClassName={"px-1"}
+                previousLinkClassName={
+                  "px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700"
+                }
+                nextClassName={"px-1"}
+                nextLinkClassName={
+                  "px-3 py-2 rounded-md hover:bg-gray-100 text-gray-700"
+                }
+                breakClassName={"px-1"}
+                breakLinkClassName={"px-3 py-2 rounded-md text-gray-700"}
+                activeClassName={"bg-blue-500 rounded-md"}
+                activeLinkClassName={"!text-white hover:!bg-blue-600"}
+                disabledClassName={"opacity-50 cursor-not-allowed"}
+                // forcePage is 0-indexed, pagination.page is 1-indexed
+                forcePage={pagination.page - 1}
+              />
             </div>
+            // <div className="mt-4 flex justify-center">
+            //   <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+            //     {Array.from({
+            //       length: Math.ceil(pagination.total / pagination.limit),
+            //     }).map((_, index) => (
+            //       <button
+            //         key={index}
+            //         onClick={() => dispatch(setPage(index + 1))}
+            //         className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium
+            //           ${
+            //             pagination.page === index + 1
+            //               ? "z-10 bg-blue-50 border-blue-500 text-blue-600"
+            //               : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
+            //           }`}
+            //       >
+            //         {index + 1}
+            //       </button>
+            //     ))}
+            //   </nav>
+            // </div>
           )}
         </>
       )}

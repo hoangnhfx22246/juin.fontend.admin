@@ -129,6 +129,7 @@ const authSlice = createSlice({
         state.accessToken = null;
         localStorage.removeItem("currentUser");
         localStorage.removeItem("accessToken");
+        localStorage.removeItem("csrfToken");
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.isLoading = false;

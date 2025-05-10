@@ -61,6 +61,7 @@ const setupInterceptors = (axiosInstance) => {
               onRefreshed(newAccessToken);
             } catch (err) {
               storeInstance.dispatch({ type: "auth/logoutUser/fulfilled" });
+
               return Promise.reject(err);
             } finally {
               isRefreshing = false;
@@ -71,8 +72,9 @@ const setupInterceptors = (axiosInstance) => {
         } catch (err) {
           isRefreshing = false;
           // Nếu refresh token thất bại, reset cờ isRefreshing.
+          console.log("Error refreshing token:", err);
 
-          storeInstance.dispatch({ type: "auth/logoutUser/fulfilled" });
+          // storeInstance.dispatch({ type: "auth/logoutUser/fulfilled" });
           // Dispatch logoutUser để xóa dữ liệu user trên Redux.
 
           return Promise.reject(err);

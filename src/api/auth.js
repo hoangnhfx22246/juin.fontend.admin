@@ -29,7 +29,6 @@ export const logoutUserAPI = async () => {
   const res = await axiosPrivate.post("/api/auth/logout", null, {
     withCredentials: true,
   });
-  localStorage.removeItem("csrfToken"); // Xoá token sau khi server xác nhận logout
   return res.data;
 };
 
