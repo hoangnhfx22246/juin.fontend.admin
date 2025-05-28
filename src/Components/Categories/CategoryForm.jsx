@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createCategory, updateCategory } from "../../redux/categorySlice";
+import renderFieldErrors from "../../util/renderFieldErrors";
 
 const CategoryForm = ({ editData, onClose, isLoading }) => {
   const dispatch = useDispatch();
-  const { categories, parentCategories } = useSelector(
+  const { categories, parentCategories, error } = useSelector(
     (state) => state.categories
   );
 
@@ -64,7 +65,9 @@ const CategoryForm = ({ editData, onClose, isLoading }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700">Name</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Danh mục
+        </label>
         <input
           type="text"
           value={formData.name}
@@ -72,12 +75,11 @@ const CategoryForm = ({ editData, onClose, isLoading }) => {
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           required
         />
+        {error && renderFieldErrors("name", error)}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Description
-        </label>
+        <label className="block text-sm font-medium text-gray-700">Mô tả</label>
         <textarea
           value={formData.description}
           onChange={(e) =>
@@ -87,10 +89,11 @@ const CategoryForm = ({ editData, onClose, isLoading }) => {
           rows="3"
           required
         />
+        {error && renderFieldErrors("description", error)}
       </div>
       <div>
         <label className="block text-sm font-medium text-gray-700">
-          Parent Category
+          Thuộc danh mục
         </label>
         <select
           value={formData.parentId}
@@ -114,10 +117,11 @@ const CategoryForm = ({ editData, onClose, isLoading }) => {
               </option>
             ))}
         </select>
+        {error && renderFieldErrors("parentId", error)}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Image</label>
+        <label className="block text-sm font-medium text-gray-700">Ảnh</label>
         <input
           type="file"
           onChange={handleImageChange}
@@ -140,7 +144,7 @@ const CategoryForm = ({ editData, onClose, isLoading }) => {
             onClick={onClose}
             className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
           >
-            Cancel
+            Huỷ
           </button>
         )}
 
@@ -178,9 +182,9 @@ const CategoryForm = ({ editData, onClose, isLoading }) => {
               Loading...
             </div>
           ) : editData ? (
-            "Update"
+            "Sửa"
           ) : (
-            "Create"
+            "Tạo"
           )}
         </button>
       </div>

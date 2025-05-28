@@ -24,68 +24,80 @@ const initialState = {
 
 export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
-  async (params) => {
+  async (params, thunkAPI) => {
     try {
       const response = await categoryAPI.getCategories(params);
       return response;
-    } catch (error) {
-      showNotification.error(error.response.data.message);
-      throw error;
+    } catch (err) {
+      // Có thể là err.response.data nếu dùng axios
+
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.errors || err.message
+      );
     }
   }
 );
 
 export const createCategory = createAsyncThunk(
   "categories/createCategory",
-  async (formData) => {
+  async (formData, thunkAPI) => {
     try {
       const response = await categoryAPI.createCategory(formData);
       return response;
-    } catch (error) {
-      showNotification.error(error.response.data.message);
-      throw error;
+    } catch (err) {
+      // Có thể là err.response.data nếu dùng axios
+
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.errors || err.message
+      );
     }
   }
 );
 
 export const updateCategory = createAsyncThunk(
   "categories/updateCategory",
-  async ({ id, formData }) => {
-    console.log("updateCategory", id, formData);
-
+  async ({ id, formData }, thunkAPI) => {
     try {
       const response = await categoryAPI.updateCategory(id, formData);
       return response;
-    } catch (error) {
-      showNotification.error(error.response.data.message);
+    } catch (err) {
+      // Có thể là err.response.data nếu dùng axios
 
-      throw error;
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.errors || err.message
+      );
     }
   }
 );
 
 export const deleteCategory = createAsyncThunk(
   "categories/deleteCategory",
-  async (id) => {
+  async (id, thunkAPI) => {
     try {
       await categoryAPI.deleteCategory(id);
       return id;
-    } catch (error) {
-      showNotification.error(error.response.data.message);
-      throw error;
+    } catch (err) {
+      // Có thể là err.response.data nếu dùng axios
+
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || err.message
+      );
     }
   }
 );
 
 export const fetchParentCategories = createAsyncThunk(
   "categories/fetchParentCategories",
-  async () => {
+  async (thunkAPI) => {
     try {
       const response = await categoryAPI.getParentCategories();
       return response;
-    } catch (error) {
-      showNotification.error(error.response.data.message);
-      throw error;
+    } catch (err) {
+      // Có thể là err.response.data nếu dùng axios
+
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.errors || err.message
+      );
     }
   }
 );
@@ -125,7 +137,8 @@ const categorySlice = createSlice({
       })
       .addCase(fetchCategories.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
+        showNotification.error("error fetching categories");
       })
       // 👤 Create category
       .addCase(createCategory.pending, (state) => {
@@ -140,7 +153,8 @@ const categorySlice = createSlice({
       })
       .addCase(createCategory.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
+        showNotification.error("error created category");
       })
       // 👤 Update category
       .addCase(updateCategory.pending, (state) => {
@@ -160,7 +174,8 @@ const categorySlice = createSlice({
       })
       .addCase(updateCategory.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
+        showNotification.error("error updating category");
       })
       // 👤 Delete category
       .addCase(deleteCategory.pending, (state) => {
@@ -177,7 +192,8 @@ const categorySlice = createSlice({
       })
       .addCase(deleteCategory.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
+        showNotification.error(state.error);
       })
       // 👤 Fetch parent categorie
       .addCase(fetchParentCategories.pending, (state) => {
@@ -190,7 +206,8 @@ const categorySlice = createSlice({
       })
       .addCase(fetchParentCategories.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
+        showNotification.error("error fetching parent categories");
       });
   },
 });

@@ -1,10 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  deleteCategory,
-  fetchCategories,
-  setSort,
-} from "../../redux/categorySlice";
+import { deleteCategory, setSort } from "../../redux/categorySlice";
 import SortIcon from "../Layouts/SortIcon";
 
 const CategoryTable = ({ categories, onEdit }) => {
@@ -15,7 +11,6 @@ const CategoryTable = ({ categories, onEdit }) => {
     if (window.confirm("Are you sure you want to delete this category?")) {
       try {
         await dispatch(deleteCategory(id)).unwrap();
-        dispatch(fetchCategories());
       } catch (error) {
         console.error("Error:", error);
       }
@@ -45,12 +40,12 @@ const CategoryTable = ({ categories, onEdit }) => {
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            {renderSortableHeader("name", "Name")}
-            {renderSortableHeader("parentId", "Parent Category")}
-            {renderSortableHeader("description", "Description")}
-            {renderSortableHeader("createdAt", "Created At")}
+            {renderSortableHeader("name", "Danh mục")}
+            {renderSortableHeader("parentId", "Thuộc danh mục")}
+            {renderSortableHeader("description", "Mô tả")}
+            {renderSortableHeader("createdAt", "Ngày Tạo")}
             <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Actions
+              Chức năng
             </th>
           </tr>
         </thead>

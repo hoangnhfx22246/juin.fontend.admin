@@ -17,7 +17,6 @@ export const categoryAPI = {
         "Content-Type": "multipart/form-data",
       },
     });
-
     return response.data;
   },
 
